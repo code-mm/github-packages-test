@@ -1,0 +1,35 @@
+plugins {
+    id 'java'
+    id("maven-publish")
+}
+
+group 'org.ms'
+version 'latest-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+//mvn deploy -Dregistry=https://maven.pkg.github.com/m-maohuawei -Dtoken=GH_TOKEN
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/m-maohuawei/Repository")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+            }
+        }
+    }
+    publications {
+        gpr(MavenPublication) {
+            from(components["java"])
+        }
+    }
+}
+
